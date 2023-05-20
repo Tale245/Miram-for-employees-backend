@@ -6,15 +6,15 @@ const orderSchema = new mongoose.Schema(
       {
         articleNumber: {
           type: String,
-          required: true,
+          required: false,
         },
         format: {
           type: String,
-          required: true,
+          required: false,
         },
         quantity: {
           type: Number,
-          required: true,
+          required: false,
         },
         createsAt: {
           type: Date,

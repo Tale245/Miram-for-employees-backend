@@ -10,11 +10,34 @@ const UnauthorizedError = require('../Error/UnauthorizedError');
 const BadRequestError = require('../Error/BadRequestError');
 const SignupError = require('../Error/SignupError');
 
+// Получаем информацию о пользователях
+module.exports.getUsers = (req, res, next) => {
+  User.find({})
+    .then((data) => res.status(STATUS__OK).send(data))
+    .catch((err) => {
+      next(err);
+    });
+};
+// Получаем информацию о текущем пользователе
+module.exports.getUserInfo = (req, res, next) => {
+  User.findById(req.user._id)
+    .orFail(() => {
+      throw new NotFoundError('Передан невалидный id пользователя');
+    })
+    .then((data) => res.status(STATUS__OK).send(data))
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        next(new BadRequestError('Переданы некорректные данные'));
+      } else {
+        next(err);
+      }
+    });
+};
+
 // Создание пользователя
 module.exports.createUser = (req, res, next) => {
   const { name, lastName, patronymic, gender, type, email, password } =
     req.body;
-  console.log(req.body);
   bcrypt
     .hash(req.body.password, 10)
     .then((hash) => {
@@ -28,7 +51,6 @@ module.exports.createUser = (req, res, next) => {
         password: hash,
       })
         .then((data) => {
-          console.log(data);
           res.status(200).send(data);
         })
         .catch((e) => {

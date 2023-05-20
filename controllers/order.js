@@ -16,6 +16,7 @@ module.exports.getOrders = (req, res, next) => {
 
 // Создаем заказ
 module.exports.createOrder = (req, res, next) => {
+  console.log(req.body)
   Order.create(req.body)
     .then((data) => {
       res.status(STATUS__OK).send(data);
@@ -33,6 +34,7 @@ module.exports.createOrder = (req, res, next) => {
 
 // Добавляем позиции в новый заказ
 module.exports.addItemsInNewOrder = (req, res, next) => {
+  console.log(req.body)
   // Берем айди заказа из переменной, чтобы найти его и добавить туда позиции
   Order.findById(id)
     .then((data) => {
